@@ -1,0 +1,22 @@
+# Revyl Test Definition
+
+_meta:
+    remote_id: 72d91dc7-b66c-473b-85a3-e9a9c3a917b8
+    remote_version: 2
+    local_version: 2
+    last_synced_at: "2026-08-17T15:21:37-07:00"
+    checksum: 4d4b2d3e13aca7dd3ef81c542443623a0f64ce07181bf143fd3974b1f5d418cf
+test:
+    metadata:
+        name: skip-onboarding-search
+        platform: ios
+    build:
+        name: Wikipedia iOS
+        pinned_version: remote-186f7f43
+    blocks:
+        - type: instructions
+          step_description: Skip the onboarding introduction to proceed to the Wikipedia main screen.
+        - type: instructions
+          step_description: Search for 'Ada Lovelace', dismiss any trivia game or interactive prompts that appear, and open her biography article.
+        - type: validation
+          step_description: Verify that the Wikipedia article for Ada Lovelace is successfully displayed on the screen.
