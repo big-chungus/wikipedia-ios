@@ -96,7 +96,7 @@ class WMFWelcomePanelViewController: ThemeableViewController {
     private func updateUIStrings() {
         switch welcomePageType {
         case .intro:
-            titleLabel.text = WMFLocalizedString("welcome-intro-free-encyclopedia-title", value:"The free encyclopedia", comment:"Title for introductory welcome screen")
+            titleLabel.text = WMFLocalizedString("welcome-intro-free-encyclopedia-title", value:"Knowledge belongs to everyone", comment:"Title for introductory welcome screen")
         case .exploration:
             titleLabel.text = WMFLocalizedString("welcome-explore-new-ways-title", value:"New ways to explore", comment:"Title for welcome screens including explanation of new notification features")
         case .languages:
