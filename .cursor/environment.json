@@ -1,0 +1,5 @@
+{
+  "name": "wikipedia-ios (Linux lint & static analysis)",
+  "user": "ubuntu",
+  "install": "bash .cursor/install.sh"
+}
