@@ -125,6 +125,23 @@ class SearchViewController: ThemeableViewController, WMFNavigationBarConfiguring
             self?.navigationItem.searchController?.searchBar.text = searchTerm
             self?.navigationItem.searchController?.searchBar.becomeFirstResponder()
         }
+        vc.randomArticleAction = { [weak self] siteURL in
+            guard let self,
+                  let dataStore,
+                  let navigationController else {
+                return
+            }
+            let coordinator = RandomArticleCoordinator(
+                navigationController: navigationController,
+                articleURL: nil,
+                siteURL: siteURL,
+                dataStore: dataStore,
+                theme: theme,
+                source: .search,
+                animated: true
+            )
+            coordinator.start()
+        }
         vc.articleTappedAction = { [weak self] articleURL, needsNewTab in
             guard let self, let dataStore, let navVC = navigationController else { return }
             

@@ -18,6 +18,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (instancetype)noFeedEmptyView;
 + (instancetype)noArticleEmptyView;
 + (instancetype)noSearchResultsEmptyView;
++ (instancetype)noSearchResultsWithActionEmptyViewWithTarget:(nullable id)target action:(nullable SEL)action;
 + (instancetype)noSavedPagesEmptyView;
 + (instancetype)noSavedPagesInReadingListEmptyView;
 + (instancetype)noInternetConnectionEmptyView;

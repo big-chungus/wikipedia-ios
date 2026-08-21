@@ -10,6 +10,7 @@ typedef NS_ENUM(NSUInteger, WMFEmptyViewType) {
     WMFEmptyViewTypeNoFeed,
     WMFEmptyViewTypeArticleDidNotLoad,
     WMFEmptyViewTypeNoSearchResults,
+    WMFEmptyViewTypeNoSearchResultsWithAction,
     WMFEmptyViewTypeNoSavedPages,
     WMFEmptyViewTypeNoSavedPagesInReadingList,
     WMFEmptyViewTypeNoInternetConnection,

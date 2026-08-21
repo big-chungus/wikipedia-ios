@@ -55,6 +55,41 @@ struct WMFSearchFetcherTests {
     }
 }
 
+struct SearchRecoveryTests {
+    @Test
+    func visibilityRequiresCompletedZeroResults() {
+        #expect(SearchResultsDisplayState.history.showsSearchRecovery == false)
+        #expect(SearchResultsDisplayState.loading.showsSearchRecovery == false)
+        #expect(SearchResultsDisplayState.completed(resultCount: 1).showsSearchRecovery == false)
+        #expect(SearchResultsDisplayState.failed(.noSearchResults).showsSearchRecovery == false)
+        #expect(SearchResultsDisplayState.completed(resultCount: 0).showsSearchRecovery)
+
+        #expect(SearchResultsDisplayState.history.emptyViewType == .none)
+        #expect(SearchResultsDisplayState.loading.emptyViewType == .none)
+        #expect(SearchResultsDisplayState.completed(resultCount: 1).emptyViewType == .none)
+        #expect(SearchResultsDisplayState.failed(.noSearchResults).emptyViewType == .noSearchResults)
+        #expect(SearchResultsDisplayState.completed(resultCount: 0).emptyViewType == .noSearchResultsWithAction)
+    }
+
+    @MainActor
+    @Test
+    func surpriseMeTriggersNavigationForCurrentSearchLanguage() throws {
+        let expectedSiteURL = try #require(URL(string: "https://es.wikipedia.org"))
+        let controller = SearchResultsViewController(source: .searchTab, dataStore: MWKDataStore.shared())
+        var openedSiteURL: URL?
+        controller.randomArticleAction = { openedSiteURL = $0 }
+        controller.resultsViewController.searchSiteURL = expectedSiteURL
+
+        controller.transition(to: .loading)
+        controller.didTapSurpriseMe()
+        #expect(openedSiteURL == nil)
+
+        controller.transition(to: .completed(resultCount: 0))
+        controller.didTapSurpriseMe()
+        #expect(openedSiteURL == expectedSiteURL)
+    }
+}
+
 private final class WMFSearchFetcherTestBundleToken {}
 
 private extension WMFSearchFetcher {
