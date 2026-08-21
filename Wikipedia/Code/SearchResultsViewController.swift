@@ -392,6 +392,7 @@ class SearchResultsViewController: ThemeableViewController, WMFNavigationBarConf
     func transition(to displayState: SearchResultsDisplayState) {
         self.displayState = displayState
         resultsViewController.emptyViewType = displayState.emptyViewType
+        resultsViewController.updateEmptyState()
     }
 
     @objc func didTapSurpriseMe() {
@@ -564,6 +565,7 @@ extension SearchResultsViewController: UISearchResultsUpdating {
                 return
             }
             searchTerm = text
+            transition(to: .loading)
 
             searchTask?.cancel()
             searchTask = Task { @MainActor [weak self] in
