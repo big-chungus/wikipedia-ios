@@ -1,0 +1,36 @@
+# Revyl Test Definition
+
+_meta:
+    remote_id: ab75f828-d0a1-4f61-b6a0-37da171daf00
+    remote_version: 1
+    local_version: 1
+    last_synced_at: "2026-08-21T03:29:24Z"
+    checksum: 276fe0537c8ccc34257301b2796140ee7378870e9d98fb82f0d8e53955352948
+test:
+    metadata:
+        name: search-zero-results-recovery
+        platform: ios
+        tags:
+            - search
+            - recovery
+    build:
+        name: Wikipedia iOS
+    blocks:
+        - type: instructions
+          step_description: If onboarding is visible, skip it to reach the Wikipedia main screen.
+        - type: instructions
+          step_description: Open the Search tab and focus the search field.
+        - type: instructions
+          step_description: Search for "zzzz-no-wikipedia-result-92841".
+        - type: validation
+          step_description: The completed search shows a no-results message and a visible "Surprise me" button.
+        - type: instructions
+          step_description: Tap the "Surprise me" button.
+        - type: validation
+          step_description: A Wikipedia article screen loads with a visible article title.
+        - type: instructions
+          step_description: Navigate back to the Search screen.
+        - type: instructions
+          step_description: Replace the current search text with "Ada Lovelace".
+        - type: validation
+          step_description: Normal search results for Ada Lovelace are visible and the "Surprise me" recovery action is absent.
