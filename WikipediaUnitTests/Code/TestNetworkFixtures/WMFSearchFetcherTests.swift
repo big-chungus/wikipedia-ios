@@ -77,6 +77,11 @@ struct SearchRecoveryTests {
         let expectedSiteURL = try #require(URL(string: "https://es.wikipedia.org"))
         let controller = SearchResultsViewController(source: .searchTab, dataStore: MWKDataStore.shared())
         var openedSiteURL: URL?
+        controller.loadViewIfNeeded()
+
+        controller.transition(to: .completed(resultCount: 0))
+        #expect(controller.resultsViewController.emptyViewType == .noSearchResults)
+
         controller.randomArticleAction = { openedSiteURL = $0 }
         controller.resultsViewController.searchSiteURL = expectedSiteURL
 
@@ -85,6 +90,7 @@ struct SearchRecoveryTests {
         #expect(openedSiteURL == nil)
 
         controller.transition(to: .completed(resultCount: 0))
+        #expect(controller.resultsViewController.emptyViewType == .noSearchResultsWithAction)
         controller.didTapSurpriseMe()
         #expect(openedSiteURL == expectedSiteURL)
     }

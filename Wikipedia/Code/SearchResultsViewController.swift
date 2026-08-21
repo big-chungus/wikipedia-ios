@@ -347,9 +347,9 @@ class SearchResultsViewController: ThemeableViewController, WMFNavigationBarConf
                       searchTerm == self.searchTerm else { return }
                 NSUserActivity.wmf_makeActive(NSUserActivity.wmf_searchResultsActivitySearchSiteURL(siteURL, searchTerm: searchTerm))
                 let resultsArray = results.results ?? []
-                self.transition(to: .completed(resultCount: resultsArray.count))
                 self.resultsViewController.resultsInfo = results
                 self.resultsViewController.searchSiteURL = siteURL
+                self.transition(to: .completed(resultCount: resultsArray.count))
                 self.resultsViewController.results = resultsArray
                 guard !suggested else { return }
                 SearchFunnel.shared.logSearchResults(with: type, resultCount: resultsArray.count, elapsedTime: Date().timeIntervalSince(start), source: self.source.stringValue)
@@ -391,7 +391,11 @@ class SearchResultsViewController: ThemeableViewController, WMFNavigationBarConf
 
     func transition(to displayState: SearchResultsDisplayState) {
         self.displayState = displayState
-        resultsViewController.emptyViewType = displayState.emptyViewType
+        if displayState.showsSearchRecovery, randomArticleAction == nil {
+            resultsViewController.emptyViewType = .noSearchResults
+        } else {
+            resultsViewController.emptyViewType = displayState.emptyViewType
+        }
         resultsViewController.updateEmptyState()
     }
 
