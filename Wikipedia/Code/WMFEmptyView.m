@@ -1,5 +1,6 @@
 #import "WMFEmptyView.h"
 #import <WMF/UIView+WMFDefaultNib.h>
+@import WMFComponents;
 #import "Wikipedia-Swift.h"
 
 @interface WMFEmptyView ()
@@ -104,6 +105,27 @@
     [view.actionLabel removeFromSuperview];
     [view.actionLine removeFromSuperview];
     [view.button removeFromSuperview];
+    return view;
+}
+
++ (instancetype)noSearchResultsWithActionEmptyViewWithTarget:(nullable id)target action:(nullable SEL)action {
+    WMFEmptyView *view = [[self class] emptyView];
+    view.titleLabel.text = WMFLocalizedStringWithDefaultValue(@"search-no-results-title", nil, nil, @"No results found", @"Title shown when a completed article search has no results");
+    view.messageLabel.text = WMFLocalizedStringWithDefaultValue(@"search-no-results-message", nil, nil, @"Try checking your spelling or searching for something else.", @"Helpful message shown when a completed article search has no results");
+    view.messageLabel.accessibilityIdentifier = WMFAccessibilityIdentifier.searchNoResultsMessage;
+    [view configureButtonWithTitle:WMFLocalizedStringWithDefaultValue(@"search-no-results-surprise-me", nil, nil, @"Surprise me", @"Button that opens a random article after a completed search has no results")
+                            image:nil
+                           target:target
+                           action:action];
+    view.button.accessibilityIdentifier = WMFAccessibilityIdentifier.searchSurpriseMeButton;
+    view.button.horizontalSpacing = 0;
+    view.button.titleLabel.numberOfLines = 0;
+    view.button.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    view.button.titleLabel.textAlignment = NSTextAlignmentCenter;
+
+    [view.imageView removeFromSuperview];
+    [view.actionLabel removeFromSuperview];
+    [view.actionLine removeFromSuperview];
     return view;
 }
 

@@ -12,6 +12,31 @@ protocol SearchResultsHosting {
     var disableSearchCancelLogging: Bool { get }
 }
 
+enum SearchResultsDisplayState {
+    case history
+    case loading
+    case completed(resultCount: Int)
+    case failed(WMFEmptyViewType)
+
+    var emptyViewType: WMFEmptyViewType {
+        switch self {
+        case .history, .loading:
+            return .none
+        case let .completed(resultCount):
+            return resultCount == 0 ? .noSearchResultsWithAction : .none
+        case let .failed(emptyViewType):
+            return emptyViewType
+        }
+    }
+
+    var showsSearchRecovery: Bool {
+        guard case let .completed(resultCount) = self else {
+            return false
+        }
+        return resultCount == 0
+    }
+}
+
 /// This class is designed to be used exclusively as a `UISearchController.searchResultsController`.
 class SearchResultsViewController: ThemeableViewController, WMFNavigationBarConfiguring, ShareableArticlesProvider {
 
@@ -47,6 +72,9 @@ class SearchResultsViewController: ThemeableViewController, WMFNavigationBarConf
     /// Called when the user selects a recently-searched term so the parent can write the text into
     /// its own search bar and activate it.
     var populateSearchBarAction: ((String) -> Void)?
+
+    /// Called when the user requests a random article after a completed zero-result search.
+    var randomArticleAction: ((URL) -> Void)?
 
     /// Controls whether the language picker bar is shown at the top of this VC.
     var showLanguageBar: Bool = true {
@@ -86,6 +114,7 @@ class SearchResultsViewController: ThemeableViewController, WMFNavigationBarConf
     private var lastSearchSiteURL: URL?
     private var _siteURL: URL?
     private var searchTask: Task<Void, Never>?
+    private(set) var displayState: SearchResultsDisplayState = .history
 
     var siteURL: URL? {
         get {
@@ -298,13 +327,15 @@ class SearchResultsViewController: ThemeableViewController, WMFNavigationBarConf
         guard (searchTerm as NSString).character(at: 0) != NSTextAttachment.character else { return }
 
         resetSearchResults()
+        transition(to: .loading)
         let start = Date()
 
         let failure = { (error: Error, type: WMFSearchType) in
             DispatchQueue.main.async { [weak self] in
                 guard let self,
                       searchTerm == self.searchTerm else { return }
-                self.resultsViewController.emptyViewType = (error as NSError).wmf_isNetworkConnectionError() ? .noInternetConnection : (error as NSError).wmf_isCancelledError() ? .none : .noSearchResults
+                let emptyViewType: WMFEmptyViewType = (error as NSError).wmf_isNetworkConnectionError() ? .noInternetConnection : (error as NSError).wmf_isCancelledError() ? .none : .noSearchResults
+                self.transition(to: .failed(emptyViewType))
                 self.resultsViewController.results = []
                 SearchFunnel.shared.logShowSearchError(with: type, elapsedTime: Date().timeIntervalSince(start), source: self.source.stringValue)
             }
@@ -312,12 +343,13 @@ class SearchResultsViewController: ThemeableViewController, WMFNavigationBarConf
 
         let success = { (results: WMFSearchResults, type: WMFSearchType) in
             DispatchQueue.main.async { [weak self] in
-                guard let self else { return }
+                guard let self,
+                      searchTerm == self.searchTerm else { return }
                 NSUserActivity.wmf_makeActive(NSUserActivity.wmf_searchResultsActivitySearchSiteURL(siteURL, searchTerm: searchTerm))
                 let resultsArray = results.results ?? []
-                self.resultsViewController.emptyViewType = resultsArray.isEmpty ? .noSearchResults : .none
                 self.resultsViewController.resultsInfo = results
                 self.resultsViewController.searchSiteURL = siteURL
+                self.transition(to: .completed(resultCount: resultsArray.count))
                 self.resultsViewController.results = resultsArray
                 guard !suggested else { return }
                 SearchFunnel.shared.logSearchResults(with: type, resultCount: resultsArray.count, elapsedTime: Date().timeIntervalSince(start), source: self.source.stringValue)
@@ -353,8 +385,26 @@ class SearchResultsViewController: ThemeableViewController, WMFNavigationBarConf
 
     func resetSearchResults() {
         fetcher.cancelAllFetches()
-        resultsViewController.emptyViewType = .none
+        transition(to: .history)
         resultsViewController.results = []
+    }
+
+    func transition(to displayState: SearchResultsDisplayState) {
+        self.displayState = displayState
+        if displayState.showsSearchRecovery, randomArticleAction == nil {
+            resultsViewController.emptyViewType = .noSearchResults
+        } else {
+            resultsViewController.emptyViewType = displayState.emptyViewType
+        }
+        resultsViewController.updateEmptyState()
+    }
+
+    @objc func didTapSurpriseMe() {
+        guard displayState.showsSearchRecovery,
+              let searchSiteURL = resultsViewController.searchSiteURL else {
+            return
+        }
+        randomArticleAction?(searchSiteURL)
     }
 
     func didCancelSearch() {
@@ -389,6 +439,8 @@ class SearchResultsViewController: ThemeableViewController, WMFNavigationBarConf
         let vc = SearchResultsListViewController()
         vc.dataStore = dataStore
         vc.apply(theme: theme)
+        vc.emptyViewTarget = self
+        vc.emptyViewAction = #selector(didTapSurpriseMe)
 
         vc.tappedSearchResultAction = { [weak self] articleURL, indexPath in
             guard let self else { return }
@@ -517,6 +569,7 @@ extension SearchResultsViewController: UISearchResultsUpdating {
                 return
             }
             searchTerm = text
+            transition(to: .loading)
 
             searchTask?.cancel()
             searchTask = Task { @MainActor [weak self] in

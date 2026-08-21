@@ -1319,6 +1319,9 @@
 "search-button-accessibility-label" = "Search Wikipedia";
 "search-clear-title" = "Clear";
 "search-field-placeholder-text" = "Search Wikipedia";
+"search-no-results-message" = "Try checking your spelling or searching for something else.";
+"search-no-results-surprise-me" = "Surprise me";
+"search-no-results-title" = "No results found";
 "search-recent-clear-confirmation-heading" = "Delete all recent searches?";
 "search-recent-clear-confirmation-sub-heading" = "This action cannot be undone!";
 "search-recent-clear-delete-all" = "Delete All";

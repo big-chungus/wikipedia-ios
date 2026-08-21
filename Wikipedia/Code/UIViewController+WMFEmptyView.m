@@ -26,6 +26,9 @@ static const char *const WMFEmptyViewKey = "WMFEmptyView";
         case WMFEmptyViewTypeNoSearchResults:
             view = [WMFEmptyView noSearchResultsEmptyView];
             break;
+        case WMFEmptyViewTypeNoSearchResultsWithAction:
+            view = [WMFEmptyView noSearchResultsWithActionEmptyViewWithTarget:target action:action];
+            break;
         case WMFEmptyViewTypeNoSavedPages:
             view = [WMFEmptyView noSavedPagesEmptyView];
             break;

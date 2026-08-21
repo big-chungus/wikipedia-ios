@@ -1319,6 +1319,9 @@
 "search-button-accessibility-label" = "Accessibility label for a button that opens a search box to search Wikipedia.";
 "search-clear-title" = "Text of the button shown to clear recent search terms";
 "search-field-placeholder-text" = "Search field placeholder text";
+"search-no-results-message" = "Helpful message shown when a completed article search has no results";
+"search-no-results-surprise-me" = "Button that opens a random article after a completed search has no results";
+"search-no-results-title" = "Title shown when a completed article search has no results";
 "search-recent-clear-confirmation-heading" = "Heading text of delete all confirmation dialog";
 "search-recent-clear-confirmation-sub-heading" = "Sub-heading text of delete all confirmation dialog";
 "search-recent-clear-delete-all" = "Button text for confirming delete all action {{Identical|Delete all}}";

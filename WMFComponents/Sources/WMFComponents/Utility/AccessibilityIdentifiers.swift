@@ -66,9 +66,11 @@ public enum AccessibilityIdentifiers {
     public enum Search {
         public static let clearRecentSearchesButton = "Search Clear Recent Searches Button"
         public static let clearRecentSearchesConfirmButton = "Search Clear Recent Searches Confirm Button"
+        public static let noResultsMessage = "Search No Results Message"
         public static let recentSearchesView = "Search Recent Searches View"
         public static let searchField = "Search Field"
         public static let searchBar = "Search Bar"
+        public static let surpriseMeButton = "Search Surprise Me Button"
         public static let tabButton = "Search Tab Button"
         public static let view = "Search View"
 
@@ -151,6 +153,9 @@ public final class WMFAccessibilityIdentifier: NSObject {
     public static var imageGalleryLoadingIndicator: String { AccessibilityIdentifiers.ImageGallery.loadingIndicator }
     public static var imageGalleryShareButton: String { AccessibilityIdentifiers.ImageGallery.shareButton }
     public static var imageGalleryView: String { AccessibilityIdentifiers.ImageGallery.view }
+
+    public static var searchNoResultsMessage: String { AccessibilityIdentifiers.Search.noResultsMessage }
+    public static var searchSurpriseMeButton: String { AccessibilityIdentifiers.Search.surpriseMeButton }
 
     public static var languageSelectionAllLanguagesView: String { AccessibilityIdentifiers.LanguageSelection.allLanguagesView }
     public static var languageSelectionLanguagesView: String { AccessibilityIdentifiers.LanguageSelection.languagesView }

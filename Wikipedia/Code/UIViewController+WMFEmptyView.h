@@ -20,7 +20,8 @@ typedef NS_ENUM(NSUInteger, WMFEmptyViewType) {
     WMFEmptyViewTypeDiffSingle,
     WMFEmptyViewTypeDiffErrorCompare,
     WMFEmptyViewTypeDiffErrorSingle,
-    WMFEmptyViewTypeNoOtherArticleLanguages
+    WMFEmptyViewTypeNoOtherArticleLanguages,
+    WMFEmptyViewTypeNoSearchResultsWithAction
 };
 
 @protocol WMFEmptyViewContainer
