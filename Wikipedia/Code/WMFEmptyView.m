@@ -118,6 +118,10 @@
                            target:target
                            action:action];
     view.button.accessibilityIdentifier = WMFAccessibilityIdentifier.searchSurpriseMeButton;
+    view.button.horizontalSpacing = 0;
+    view.button.titleLabel.numberOfLines = 0;
+    view.button.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    view.button.titleLabel.textAlignment = NSTextAlignmentCenter;
 
     [view.imageView removeFromSuperview];
     [view.actionLabel removeFromSuperview];
